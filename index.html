@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Macros</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <meta name="theme-color" content="#07080b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Macros" />
+
+  <link rel="icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <h1>MACROS</h1>
+        <div class="sub" id="todayLabel"></div>
+      </div>
+
+      <div class="topbarRight">
+        <button class="iconBtn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <!-- Moon (dark) -->
+          <svg class="themeIcon moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 14.2A7.7 7.7 0 0 1 9.8 3 8.8 8.8 0 1 0 21 14.2Z"/>
+          </svg>
+          <!-- Sun (light) -->
+          <svg class="themeIcon sun" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+
+        <div class="tabs">
+          <button class="tab active" id="tabToday" type="button">Today</button>
+          <button class="tab" id="tabHistory" type="button">History</button>
+          <button class="tab" id="tabGoals" type="button">Goals</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modalOverlay hidden" aria-hidden="true">
+      <div class="modal">
+        <div class="modalTitle" id="modalTitle">Confirm</div>
+        <div class="modalBody" id="modalBody">Are you sure?</div>
+        <div class="modalActions">
+          <button class="btn ghost" id="modalCancel" type="button">Cancel</button>
+          <button class="btn primary" id="modalOK" type="button">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY -->
+    <section id="viewToday" class="view">
+      <!-- Totals at very top -->
+      <div class="card compact">
+        <div class="totals">
+          <div><span id="tCals">0</span><small>cals</small></div>
+          <div><span id="tP">0</span><small>protein</small></div>
+          <div><span id="tC">0</span><small>carbs</small></div>
+          <div><span id="tF">0</span><small>fat</small></div>
+        </div>
+      </div>
+
+      <!-- Entry first -->
+      <div class="card">
+        <div class="entryHeader">
+          <div class="row spaceBetween">
+            <h2 class="h2tight">Add entry</h2>
+            <div class="sub" id="entryCount"></div>
+          </div>
+        </div>
+
+        <form id="entryForm" class="entryForm">
+          <input id="note" class="endCaret" placeholder="Optional note (rice, chicken, etc.)" maxlength="40" />
+
+          <div class="grid">
+            <input id="cals" class="endCaret" type="text" inputmode="numeric" data-num="int" placeholder="cals" required />
+            <input id="p" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="protein g" required />
+            <input id="c" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="carbs g" required />
+            <input id="f" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="fat g" required />
+          </div>
+
+          <button class="btn primary btnAdd" type="submit">Add</button>
+
+          <button class="btn secondary btnClear" id="clearToday" type="button">Clear today</button>
+        </form>
+      </div>
+
+      <!-- Entries list -->
+      <div class="card">
+        <h2>Entries</h2>
+        <ul class="list" id="entryList"></ul>
+        <div class="hint">Tap an entry to delete it.</div>
+      </div>
+
+      <!-- Progress -->
+      <div class="card">
+        <div class="row spaceBetween">
+          <h2 class="h2tight">Progress</h2>
+          <div class="sub" id="goalSummary"></div>
+        </div>
+
+        <div id="barsWrap" class="barsWrap hidden">
+          <div class="barRow">
+            <div class="barTop"><b>Calories</b><span id="barCalsText">0 / 0</span></div>
+            <div class="barTrack"><div class="barFill cal" id="barCals"></div></div>
+          </div>
+
+          <div class="barRow">
+            <div class="barTop"><b>Protein</b><span id="barPText">0 / 0</span></div>
+            <div class="barTrack"><div class="barFill p" id="barP"></div></div>
+          </div>
+
+          <div class="barRow">
+            <div class="barTop"><b>Carbs</b><span id="barCText">0 / 0</span></div>
+            <div class="barTrack"><div class="barFill c" id="barC"></div></div>
+          </div>
+
+          <div class="barRow">
+            <div class="barTop"><b>Fat</b><span id="barFText">0 / 0</span></div>
+            <div class="barTrack"><div class="barFill f" id="barF"></div></div>
+          </div>
+        </div>
+
+        <div class="hint" id="noGoalsHint">Set goals in the Goals tab to see progress.</div>
+      </div>
+
+      <!-- Weight & water -->
+      <div class="card compact">
+        <div class="row inputsRow">
+          <label>Weight
+            <input id="weight" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="lbs" />
+          </label>
+          <label>Water
+            <input id="water" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="oz or cups" />
+          </label>
+          <button class="btn ghost" id="saveMetrics" type="button">Save</button>
+        </div>
+        <div class="hint">Saved per day.</div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="viewHistory" class="view hidden">
+      <div class="card">
+        <h2>History</h2>
+        <ul class="list" id="dayList"></ul>
+        <div class="hint">Tap a day to view details.</div>
+      </div>
+
+      <div class="card hidden" id="dayDetailCard">
+        <div class="row spaceBetween">
+          <h2 id="detailTitle" class="h2tight">Day</h2>
+          <button class="btn ghost" id="closeDetail" type="button">Close</button>
+        </div>
+        <div class="sub" id="detailMeta"></div>
+        <ul class="list" id="detailEntries"></ul>
+      </div>
+    </section>
+
+    <!-- GOALS -->
+    <section id="viewGoals" class="view hidden">
+      <div class="card">
+        <div class="row spaceBetween">
+          <h2 class="h2tight">Goals</h2>
+          <button class="btn ghost" id="saveGoals" type="button">Save</button>
+        </div>
+
+        <div class="goalRow">
+          <div class="goalLeft">
+            <span class="miniBar cal"></span>
+            <div class="goalLabel">Calories goal</div>
+          </div>
+          <input id="goalCals" class="endCaret" type="text" inputmode="numeric" data-num="int" placeholder="cals" />
+        </div>
+
+        <div class="goalRow">
+          <div class="goalLeft">
+            <span class="miniBar p"></span>
+            <div class="goalLabel">Protein goal (g)</div>
+          </div>
+          <input id="goalP" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="g" />
+        </div>
+
+        <div class="goalRow">
+          <div class="goalLeft">
+            <span class="miniBar c"></span>
+            <div class="goalLabel">Carbs goal (g)</div>
+          </div>
+          <input id="goalC" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="g" />
+        </div>
+
+        <div class="goalRow">
+          <div class="goalLeft">
+            <span class="miniBar f"></span>
+            <div class="goalLabel">Fat goal (g)</div>
+          </div>
+          <input id="goalF" class="endCaret" type="text" inputmode="decimal" data-num="dec" placeholder="g" />
+        </div>
+
+        <div class="hint">Bars compare today’s totals to these goals.</div>
+
+        <hr class="sep"/>
+
+        <h2>Colors</h2>
+        <div class="row">
+          <label style="flex:1;">Calories
+            <input id="colCal" type="color" />
+          </label>
+          <label style="flex:1;">Protein
+            <input id="colP" type="color" />
+          </label>
+          <label style="flex:1;">Carbs
+            <input id="colC" type="color" />
+          </label>
+          <label style="flex:1;">Fat
+            <input id="colF" type="color" />
+          </label>
+        </div>
+
+        <div class="hint">These colors show in the bars + Add button uses Calories color.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
