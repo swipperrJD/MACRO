@@ -35,8 +35,17 @@ html[data-theme="light"]{
 
 *{ box-sizing:border-box; }
 
+html, body{
+  height: 100%;
+}
+
 body{
   margin:0;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior: none;
+  overflow: hidden;
   background:
     radial-gradient(1200px 500px at 15% 0%, rgba(139,149,255,0.12), transparent 55%),
     radial-gradient(900px 500px at 85% 0%, rgba(42,255,98,0.10), transparent 55%),
@@ -46,7 +55,15 @@ body{
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-.wrap{ max-width: 860px; margin: 0 auto; padding: 16px; }
+.wrap{
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px;
+  height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
 
 .topbar{
   display:flex; justify-content:space-between; align-items:flex-start;
@@ -129,8 +146,8 @@ h2{
 .spaceBetween{ justify-content:space-between; }
 .inputsRow label{ flex:1; }
 
-.entryHeader{ padding-bottom: 12px; } /* ✅ more space before inputs */
-.entryForm{ display:flex; flex-direction:column; gap:12px; } /* ✅ spacing between blocks */
+.entryHeader{ padding-bottom: 12px; }
+.entryForm{ display:flex; flex-direction:column; gap:12px; }
 
 .grid{
   display:grid;
@@ -164,7 +181,6 @@ input:focus{ border-color: rgba(139,149,255,0.45); transform: translateY(-1px); 
 
 .btn:active{ transform: translateY(1px); }
 
-/* ✅ Primary ADD button uses Calories color, clean vibe */
 .btn.primary{
   background: #ffffff;
   color: #000000;
@@ -177,21 +193,12 @@ input:focus{ border-color: rgba(139,149,255,0.45); transform: translateY(-1px); 
   box-shadow: 0 0 0 3px rgba(255,255,255,0.14), 0 14px 34px rgba(0,0,0,0.40);
 }
 
-
-/* ✅ “3rd”: subtle glow on hover (no cheesy gradients) */
-.btn.primary:hover{
-  filter: brightness(1.03);
-  box-shadow: 0 0 0 3px rgba(139,149,255,0.16), 0 14px 34px rgba(0,0,0,0.40);
-}
-
-/* ✅ Make ADD slightly less tall */
 .btnAdd{
   width:100%;
-  padding: 11px 14px; /* slightly less tall */
+  padding: 11px 14px;
   margin-top: 2px;
 }
 
-/* ✅ CLEAR TODAY as secondary pill */
 .btn.secondary{
   width: fit-content;
   background: rgba(255,255,255,0.04);
@@ -205,189 +212,26 @@ html[data-theme="light"] .btn.secondary{ background: rgba(10,12,17,0.02); }
   border-color: var(--border2);
 }
 
-/* Ghost buttons */
 .btn.ghost{
   background: transparent;
   border: 1px solid var(--border2);
   color: var(--text);
 }
 
-/* Totals */
-.totals{
-  display:grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap:10px;
-}
-.totals > div{
-  border:1px solid var(--border);
-  border-radius: var(--radius2);
-  padding: 10px;
-  text-align:center;
-  background: rgba(0,0,0,0.18);
-}
-html[data-theme="light"] .totals > div{ background: rgba(10,12,17,0.02); }
-
-.totals span{
-  display:block;
-  font-size: 22px;
-  font-weight: 950;
-  letter-spacing: .02em;
-}
-.totals small{
-  color: var(--muted);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  font-size: 10px;
-}
-
-.list{ list-style:none; padding:0; margin:0; }
-
-.item{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding: 12px 0;
-  border-top: 1px solid var(--border);
-  transform: translateY(6px);
-  opacity: 0;
-  animation: itemIn 260ms var(--ease) forwards;
-}
-.item:first-child{ border-top:0; }
-.meta{ color: var(--muted); font-size: 13px; }
-
-@keyframes itemIn{ to{ transform: translateY(0); opacity: 1; } }
-
-.hint{ color: var(--muted); font-size: 12px; margin-top: 10px; }
-
-.barsWrap{ display:flex; flex-direction:column; gap:12px; margin-top:12px; }
-.barRow{ display:flex; flex-direction:column; gap:8px; }
-.barTop{ display:flex; justify-content:space-between; align-items:center; color: var(--muted); }
-.barTop b{ color: var(--text); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
-
-.barTrack{
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.22);
-  border: 1px solid var(--border);
-  overflow:hidden;
-}
-html[data-theme="light"] .barTrack{ background: rgba(10,12,17,0.02); }
-
-.barFill{
-  height:100%;
-  width:0%;
-  border-radius: 999px;
-  transition: width 420ms var(--ease);
-}
-.barFill.cal{ background: var(--cal); }
-.barFill.p{ background: var(--p); }
-.barFill.c{ background: var(--c); }
-.barFill.f{ background: var(--f); }
-
-.sep{ border:0; border-top:1px solid var(--border); margin:14px 0; }
-
+/* --- Tab transitions --- */
 .view{
-  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease);
+  will-change: opacity, transform;
 }
+
+.view.isHidden{
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
 .view.hidden{
-  opacity:0;
-  transform: translateY(8px);
-  pointer-events:none;
+  display: none !important;
 }
 
 .hidden{ display:none !important; }
-
-/* ✅ Goals mini bar rows */
-.goalRow{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding: 10px 0;
-  border-top: 1px solid var(--border);
-}
-.goalRow:first-of-type{ border-top: 0; padding-top: 4px; }
-
-.goalLeft{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex:1;
-  min-width: 220px;
-}
-.goalLabel{
-  font-size: 12px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.miniBar{
-  width: 46px;
-  height: 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border2);
-  background: rgba(255,255,255,0.04);
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.10);
-}
-.miniBar.cal{ background: var(--cal); }
-.miniBar.p{ background: var(--p); }
-.miniBar.c{ background: var(--c); }
-.miniBar.f{ background: var(--f); }
-
-/* Toast */
-.toast{
-  position: fixed;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  padding: 10px 14px;
-  border-radius: 999px;
-  font-weight: 950;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  z-index: 9999;
-  box-shadow: var(--shadow);
-}
-
-/* Modal */
-.modalOverlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.62);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index: 9998;
-}
-html[data-theme="light"] .modalOverlay{ background: rgba(10,12,17,0.38); }
-
-.modal{
-  width: min(420px, calc(100% - 24px));
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 14px;
-  box-shadow: var(--shadow);
-  transform: translateY(8px);
-  opacity: 0;
-  animation: modalIn 220ms var(--ease) forwards;
-}
-
-@keyframes modalIn{ to{ transform: translateY(0); opacity: 1; } }
-
-.modalTitle{
-  font-weight: 950;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  font-size: 13px;
-}
-.modalBody{ margin-top: 8px; color: var(--muted); }
-
-.modalActions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-top: 12px;
-}
-.modalActions .btn{ width:auto; }
