@@ -22,6 +22,14 @@ html, body { touch-action: manipulation; }
   --dur: 260ms;
 }
 
+html{
+  background:
+    radial-gradient(1200px 500px at 15% 0%, rgba(139,149,255,0.12), transparent 55%),
+    radial-gradient(900px 500px at 85% 0%, rgba(42,255,98,0.10), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  background-color: var(--bg);
+}
+
 html[data-theme="light"]{
   --bg:#f6f7fb;
   --bg2:#ffffff;
@@ -390,4 +398,5 @@ html[data-theme="light"] .modalOverlay{ background: rgba(10,12,17,0.38); }
   margin-top: 12px;
 }
 .modalActions .btn{ width:auto; }
+
 
