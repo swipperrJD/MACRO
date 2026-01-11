@@ -166,9 +166,15 @@ input:focus{ border-color: rgba(139,149,255,0.45); transform: translateY(-1px); 
 
 /* ✅ Primary ADD button uses Calories color, clean vibe */
 .btn.primary{
-  background: var(--cal);
-  color: #0b0d12;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(255,255,255,0.16);
   box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+.btn.primary:hover{
+  filter: brightness(0.98);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.14), 0 14px 34px rgba(0,0,0,0.40);
 }
 
 /* ✅ “3rd”: subtle glow on hover (no cheesy gradients) */
@@ -384,3 +390,4 @@ html[data-theme="light"] .modalOverlay{ background: rgba(10,12,17,0.38); }
   margin-top: 12px;
 }
 .modalActions .btn{ width:auto; }
+
